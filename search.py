@@ -45,20 +45,30 @@ class Search(object):
     def praseContent(self,_file_path,_encodec):
         filePath = _file_path
         encodc = _encodec
-        lineNumber = 0
         with open(filePath, encoding=encodc) as file:
-            for line in file.readlines():
+            contains = file.readlines()
+            length =   len(contains)
+            for i in range(length):
                 if self.matchCase == False:  # don't match case
-                    lower_line = line.lower()
+                    lower_line = contains[i].lower()
                 for word in self.prasedWord_list:
-                    if lower_line.count(word):
-                        self.searchResult.append((filePath, lineNumber, line))
-                lineNumber += 1
+                    if lower_line.count(word.lower()):
+                        self.searchResult.append((filePath, i, self.matchLine(contains,i,length,2,2)))
+
+    def matchLine(self,_contains,_i,_maxindex,_beforeN,_afterN):
+        start = max(0,_i-_beforeN)
+        end = min(_maxindex,_i+_afterN)
+        lines = ""
+        for index in range(start,end+1):
+            if _contains[index].strip()!="":
+                lines += _contains[index]
+        return lines
 
     def printResult(self):
-        for result in self.searchResult:
-            print(result[0]+":")
-            print(str(result[1]) + " "+result[2])
+        results = self.searchResult
+        for i in range(len(results)):
+            print(str(i)+": "+ results[i][0]+": "+str(results[i][1]))
+            print(results[i][2])
 
     def setmatchCase(self,_bool):
         # 设置匹配大小写
@@ -75,7 +85,8 @@ class Search(object):
 
 if __name__ == '__main__':
     DIR = r"I:\Practice\Python"
-    KEYWORDS="except"
-    search = Search(DIR,KEYWORDS)
+    DIR1 = r"I:\Projects\pyqt5-master"
+    KEYWORDS="QLabel"
+    search = Search(DIR1,KEYWORDS)
     search.printResult()
     # search.check_file()
