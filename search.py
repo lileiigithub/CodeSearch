@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+from config import Config
 import shutil
 import sys
 
@@ -12,8 +13,8 @@ class Search(object):
         self.prasedFiles_list = []
         self.prasedWord_list = []
         self.searchResult = []  # file,line,contains
-        self.matchCase = False  # match case
-        self.searchFileType = ["py"]
+        self.matchCase = Config.matchCase  # match case
+        self.searchFileType = Config.searchFileType
 
         self.praseFiles()
         self.praseKeywords()
@@ -53,7 +54,8 @@ class Search(object):
                     lower_line = contains[i].lower()
                 for word in self.prasedWord_list:
                     if lower_line.count(word.lower()):
-                        self.searchResult.append((filePath, i, self.matchLine(contains,i,length,2,2)))
+                        info = (filePath, i, self.matchLine(contains,i,length,Config.beforeNum,Config.afterNum))
+                        self.searchResult.append(info)
 
     def matchLine(self,_contains,_i,_maxindex,_beforeN,_afterN):
         start = max(0,_i-_beforeN)
